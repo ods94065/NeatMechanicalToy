@@ -1,0 +1,96 @@
+{
+    u'totalItems': 1,
+    u'items': [
+        {
+            u'kind': u'books#volume',
+            u'volumeInfo': {
+                u'publisher': u'DoverPublications',
+                u'subtitle': u'AnAncientEgyptianText',
+                u'language': u'en',
+                u'publishedDate': u'1987',
+                u'readingModes': {
+                    u'text': False,
+                    u'image': False
+                },
+                u'previewLink': u'http: //books.google.com/books?id=UITBAAAACAAJ&dq=isbn: 9780486264073&hl=&cd=1&source=gbs_api',
+                u'title': u'TheRhindMathematicalPapyrus',
+                u'printType': u'BOOK',
+                u'pageCount': 60,
+                u'contentVersion': u'preview-1.0.0',
+                u'industryIdentifiers': [
+                    {
+                        u'identifier': u'0486264076',
+                        u'type': u'ISBN_10'
+                    },
+                    {
+                        u'identifier': u'9780486264073',
+                        u'type': u'ISBN_13'
+                    }
+                ],
+                u'authors': [
+                    u'GayRobins',
+                    u'CharlesShute'
+                ],
+                u'infoLink': u'http: //books.google.com/books?id=UITBAAAACAAJ&dq=isbn: 9780486264073&hl=&source=gbs_api',
+                u'categories': [
+                    u'Mathematics'
+                ],
+                u'canonicalVolumeLink': u'http: //books.google.com/books/about/The_Rhind_Mathematical_Papyrus.html?hl=&id=UITBAAAACAAJ'
+            },
+            u'saleInfo': {
+                u'country': u'US',
+                u'saleability': u'NOT_FOR_SALE',
+                u'isEbook': False
+            },
+            u'etag': u'MveLgXpCK68',
+            u'accessInfo': {
+                u'webReaderLink': u'http: //books.google.com/books/reader?id=UITBAAAACAAJ&hl=&printsec=frontcover&output=reader&source=gbs_api',
+                u'publicDomain': False,
+                u'embeddable': False,
+                u'country': u'US',
+                u'textToSpeechPermission': u'ALLOWED',
+                u'pdf': {
+                    u'isAvailable': False
+                },
+                u'quoteSharingAllowed': False,
+                u'viewability': u'NO_PAGES',
+                u'epub': {
+                    u'isAvailable': False
+                },
+                u'accessViewStatus': u'NONE'
+            },
+            u'id': u'UITBAAAACAAJ',
+            u'selfLink': u'https: //www.googleapis.com/books/v1/volumes/UITBAAAACAAJ'
+        }
+    ],
+    u'kind': u'books#volumes'
+}
+
+<QueryDict: {
+    u'publisher': [
+        u'MarinerBooks'
+    ],
+    u'description': [
+        u'PromisedLand,
+        CrusaderStateisaniconoclasticreinterpretationofthetraditionsthathaveshapedUSforeignpolicyfrom1776tothepresent.'
+    ],
+    u'author': [
+        u'WalterA.McDougall'
+    ],
+    u'title': [
+        u'PromisedLand,
+        CrusaderState: TheAmericanEncounterwiththeWorldSince1776'
+    ],
+    u'isbn_13': [
+        u'9780395830850'
+    ],
+    u'isbn_10': [
+        u'0395830850'
+    ],
+    u'publish_date': [
+        u'1997-01-01'
+    ],
+    u'csrfmiddlewaretoken': [
+        u'JhbzD7viaZSya0AonicKDudwJ7lHrKHh'
+    ]
+}>

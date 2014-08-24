@@ -1,0 +1,7 @@
+*.pem
+config/*
+.idea
+.idea/**
+.idea/*
+*.pyc
+**/*.pyc
