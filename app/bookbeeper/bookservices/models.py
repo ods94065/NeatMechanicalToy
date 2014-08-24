@@ -2,13 +2,14 @@ from django.db import models
 from django.contrib.auth.models import User,Group
 
 class LibraryBook(models.Model):
-    isbn_13=models.BigIntegerField("ISBN-13",primary_key=True,unique=True,db_index=True)
-    isbn_10=models.PositiveIntegerField("ISBN-10",blank=True)
+    isbn_13=models.CharField("ISBN-13",primary_key=True,unique=True,max_length=13,db_index=True)
+    isbn_10=models.CharField("ISBN-10",max_length=10,blank=True)
     title=models.CharField( "Title of book",max_length=250, blank = False,db_index=True)
     author=models.TextField("Comma-separated lis of authors.",max_length=1000)
     publisher=models.CharField("Name of imprint or publisher.",blank=False,max_length=200)
-    publish_date = models.DateField("Publication date",null=True)
+    publish_date = models.PositiveIntegerField("Publication date",null=True)
     description=models.TextField("Summary of book",max_length=2000,blank=True)
+    genre=models.CharField("Genre", max_length=500,blank=True)
 
 class Inventory(models.Model):
     book=models.ForeignKey(LibraryBook,null=False,db_index=True)

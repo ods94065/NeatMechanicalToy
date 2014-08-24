@@ -13,9 +13,9 @@ urlpatterns = patterns(#'',
     #url(r'^',include(router.urls)),
     #url(r'^api-auth',include('rest_framework.urls',namespace='rest_framework')),
     '',
-    url(r'^library/$',views.LibraryBookList.as_view()),
-    url(r'^library/(?P<pk>[0-9]{13})/$',views.LibraryBookIndividual.as_view()),
-    url(r'^library/import/(?P<pk>[0-9]{13})/$', views.LibraryBookImporterView.as_view())
+    url(r'^api/library/$',views.LibraryBookList.as_view()),
+    url(r'^api/library/(?P<pk>[0-9]{13})/$',views.LibraryBookIndividual.as_view()),
+    url(r'^api/library/import/(?P<pk>[0-9]{13})/$', views.LibraryBookImporterView.as_view())
 )
 
 urlpatterns = format_suffix_patterns(urlpatterns)

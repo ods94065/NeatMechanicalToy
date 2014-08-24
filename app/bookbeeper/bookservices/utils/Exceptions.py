@@ -1,0 +1,4 @@
+
+
+class NoSuchBook(Exception):
+    pass

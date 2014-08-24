@@ -8,58 +8,14 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Adding model 'LibraryBook'
-        db.create_table(u'bookservices_librarybook', (
-            ('isbn_13', self.gf('django.db.models.fields.CharField')(unique=True, max_length=13, primary_key=True, db_index=True)),
-            ('isbn_10', self.gf('django.db.models.fields.CharField')(max_length=10, blank=True)),
-            ('title', self.gf('django.db.models.fields.CharField')(max_length=250, db_index=True)),
-            ('author', self.gf('django.db.models.fields.TextField')(max_length=1000)),
-            ('publisher', self.gf('django.db.models.fields.CharField')(max_length=200)),
-            ('publish_date', self.gf('django.db.models.fields.PositiveIntegerField')(null=True)),
-            ('description', self.gf('django.db.models.fields.TextField')(max_length=2000, blank=True)),
-            ('genre', self.gf('django.db.models.fields.TextField')(max_length=30, blank=True)),
-        ))
-        db.send_create_signal(u'bookservices', ['LibraryBook'])
 
-        # Adding model 'Inventory'
-        db.create_table(u'bookservices_inventory', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('book', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['bookservices.LibraryBook'])),
-            ('quantity', self.gf('django.db.models.fields.IntegerField')(default=0)),
-        ))
-        db.send_create_signal(u'bookservices', ['Inventory'])
-
-        # Adding model 'Store'
-        db.create_table(u'bookservices_store', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(unique=True, max_length=100)),
-            ('inventory', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['bookservices.Inventory'])),
-        ))
-        db.send_create_signal(u'bookservices', ['Store'])
-
-        # Adding M2M table for field allowedUsers on 'Store'
-        m2m_table_name = db.shorten_name(u'bookservices_store_allowedUsers')
-        db.create_table(m2m_table_name, (
-            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
-            ('store', models.ForeignKey(orm[u'bookservices.store'], null=False)),
-            ('user', models.ForeignKey(orm[u'auth.user'], null=False))
-        ))
-        db.create_unique(m2m_table_name, ['store_id', 'user_id'])
-
+        # Changing field 'LibraryBook.genre'
+        db.alter_column(u'bookservices_librarybook', 'genre', self.gf('django.db.models.fields.CharField')(max_length=500))
 
     def backwards(self, orm):
-        # Deleting model 'LibraryBook'
-        db.delete_table(u'bookservices_librarybook')
 
-        # Deleting model 'Inventory'
-        db.delete_table(u'bookservices_inventory')
-
-        # Deleting model 'Store'
-        db.delete_table(u'bookservices_store')
-
-        # Removing M2M table for field allowedUsers on 'Store'
-        db.delete_table(db.shorten_name(u'bookservices_store_allowedUsers'))
-
+        # Changing field 'LibraryBook.genre'
+        db.alter_column(u'bookservices_librarybook', 'genre', self.gf('django.db.models.fields.CharField')(max_length=30))
 
     models = {
         u'auth.group': {
@@ -101,7 +57,7 @@ class Migration(SchemaMigration):
             'Meta': {'object_name': 'LibraryBook'},
             'author': ('django.db.models.fields.TextField', [], {'max_length': '1000'}),
             'description': ('django.db.models.fields.TextField', [], {'max_length': '2000', 'blank': 'True'}),
-            'genre': ('django.db.models.fields.TextField', [], {'max_length': '30', 'blank': 'True'}),
+            'genre': ('django.db.models.fields.CharField', [], {'max_length': '500', 'blank': 'True'}),
             'isbn_10': ('django.db.models.fields.CharField', [], {'max_length': '10', 'blank': 'True'}),
             'isbn_13': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '13', 'primary_key': 'True', 'db_index': 'True'}),
             'publish_date': ('django.db.models.fields.PositiveIntegerField', [], {'null': 'True'}),

@@ -9,13 +9,13 @@ class Migration(SchemaMigration):
 
     def forwards(self, orm):
 
-        # Changing field 'LibraryBook.isbn_10'
-        db.alter_column(u'bookservices_librarybook', 'isbn_10', self.gf('django.db.models.fields.PositiveIntegerField')(default=0))
+        # Changing field 'LibraryBook.genre'
+        db.alter_column(u'bookservices_librarybook', 'genre', self.gf('django.db.models.fields.CharField')(max_length=30))
 
     def backwards(self, orm):
 
-        # Changing field 'LibraryBook.isbn_10'
-        db.alter_column(u'bookservices_librarybook', 'isbn_10', self.gf('django.db.models.fields.PositiveIntegerField')(null=True))
+        # Changing field 'LibraryBook.genre'
+        db.alter_column(u'bookservices_librarybook', 'genre', self.gf('django.db.models.fields.TextField')(max_length=30))
 
     models = {
         u'auth.group': {
@@ -57,9 +57,10 @@ class Migration(SchemaMigration):
             'Meta': {'object_name': 'LibraryBook'},
             'author': ('django.db.models.fields.TextField', [], {'max_length': '1000'}),
             'description': ('django.db.models.fields.TextField', [], {'max_length': '2000', 'blank': 'True'}),
-            'isbn_10': ('django.db.models.fields.PositiveIntegerField', [], {'blank': 'True'}),
-            'isbn_13': ('django.db.models.fields.BigIntegerField', [], {'unique': 'True', 'primary_key': 'True', 'db_index': 'True'}),
-            'publish_date': ('django.db.models.fields.DateField', [], {'null': 'True'}),
+            'genre': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
+            'isbn_10': ('django.db.models.fields.CharField', [], {'max_length': '10', 'blank': 'True'}),
+            'isbn_13': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '13', 'primary_key': 'True', 'db_index': 'True'}),
+            'publish_date': ('django.db.models.fields.PositiveIntegerField', [], {'null': 'True'}),
             'publisher': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
             'title': ('django.db.models.fields.CharField', [], {'max_length': '250', 'db_index': 'True'})
         },
