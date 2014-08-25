@@ -1,5 +1,5 @@
-from bookservices.models import LibraryBook
-from bookservices.serializers import LibraryBookSerializer
+from bookservices.models import LibraryBook, User, UserToStore, Store, Inventory
+from bookservices.serializers import LibraryBookSerializer, UserToStoreSerializer, StoreSerializer, InventorySerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from APIServices import GoogleBooksService
@@ -60,3 +60,27 @@ class LibraryBookIndividual(mixins.RetrieveModelMixin,
 
     def destroy(self,request,*args,**kwargs):
         return self.destroy(request,*args,**kwargs)
+
+class InventoryList(generics.ListCreateAPIView):
+    queryset = Inventory.objects.all()
+    serializer_class=InventorySerializer
+
+class InventoryIndividual(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Inventory.objects.all()
+    serializer_class = InventorySerializer
+
+class StoreList(generics.ListCreateAPIView):
+    queryset=Store.objects.all()
+    serializer_class = StoreSerializer
+
+class StoreIndividual(generics.RetrieveUpdateDestroyAPIView):
+    queryset=Store.objects.all()
+    serializer_class = StoreSerializer
+
+class StoreToUserList(generics.ListCreateAPIView):
+    queryset = UserToStore.objects.all()
+    serializer_class=UserToStoreSerializer
+
+class StoreToUserIndividual(generics.RetrieveUpdateDestroyAPIView):
+    queryset=UserToStore.objects.all()
+    serializer_class = UserToStoreSerializer

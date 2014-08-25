@@ -11,16 +11,17 @@ class LibraryBook(models.Model):
     description=models.TextField("Summary of book",max_length=2000,blank=True)
     genre=models.CharField("Genre", max_length=500,blank=True)
 
-class Inventory(models.Model):
-    book=models.ForeignKey(LibraryBook,null=False,db_index=True)
-    quantity=models.IntegerField("Number of items in inventory",default=0,null=False)
 
 class Store(models.Model):
     name = models.CharField("Name of Store",unique=True,max_length=100)
-    allowedUsers = models.ManyToManyField(User,related_name="stores")
-    inventory=models.ForeignKey(Inventory)
+    allowedUsers = models.ManyToManyField(User,through='UserToStore',related_name='store')
 
-class UserToStore():
+class Inventory(models.Model):
+    book=models.ForeignKey(LibraryBook,null=False,db_index=True)
+    quantity=models.IntegerField("Number of items in inventory",default=0,null=False)
+    store=models.ForeignKey(Store, blank=False)
+
+class UserToStore(models.Model):
     READ='r'
     WRITE='w'
     READ_WRITE='rw'
@@ -31,8 +32,7 @@ class UserToStore():
     )
     user=models.ForeignKey(User,null=False)
     store=models.ForeignKey(Store,null=False)
-    permission=models.CharField("Kind of access granted to user.",choices=PERMISSION_CHOICES,blank=False,default=READ_WRITE)
-
+    permission=models.CharField("Kind of access granted to user.",choices=PERMISSION_CHOICES,blank=False,default=READ_WRITE,max_length=15)
 
 
 
