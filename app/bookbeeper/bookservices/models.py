@@ -17,8 +17,15 @@ class Store(models.Model):
     allowedUsers = models.ManyToManyField(User,through='UserToStore',related_name='store')
 
 class Inventory(models.Model):
+    ADD=1
+    SUBTRACT=2
+    TRANSACTION_TYPE_CHOICES={
+        (ADD,'Add to Inventory'),
+        (SUBTRACT,'Subtract from Inventory')
+    }
     book=models.ForeignKey(LibraryBook,null=False,db_index=True)
-    quantity=models.IntegerField("Number of items in inventory",default=0,null=False)
+    transaction_date = models.DateTimeField("Date of Transaction", null=False, blank=False)
+    transaction_type=models.IntegerField("Type of transaction", choices=TRANSACTION_TYPE_CHOICES,default=ADD,null=False,blank=False)
     store=models.ForeignKey(Store, blank=False)
 
 class UserToStore(models.Model):
@@ -30,7 +37,7 @@ class UserToStore(models.Model):
         (WRITE,'Write'),
         (READ_WRITE,'Read-Write')
     )
-    user=models.ForeignKey(User,null=False)
+    user=models.ForeignKey(User,null=False,related_name='storerel')
     store=models.ForeignKey(Store,null=False)
     permission=models.CharField("Kind of access granted to user.",choices=PERMISSION_CHOICES,blank=False,default=READ_WRITE,max_length=15)
 

@@ -1,15 +1,20 @@
 from bookservices.models import LibraryBook, User, UserToStore, Store, Inventory
-from bookservices.serializers import LibraryBookSerializer, UserToStoreSerializer, StoreSerializer, InventorySerializer
+from bookservices.serializers import *
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from APIServices import GoogleBooksService
 from rest_framework import status,mixins,generics
 from utils.Exceptions import NoSuchBook
-
+from django.contrib.auth.models import User
+import datetime,time
+from utils.Permissions import PostToInventoryPosition
+from rest_framework import permissions
 
 class LibraryBookList(mixins.ListModelMixin,
                   mixins.CreateModelMixin,
                   generics.GenericAPIView):
+
+    permission_classes = (permissions.IsAuthenticated,)
     queryset = LibraryBook.objects.all()
     serializer_class = LibraryBookSerializer
 
@@ -20,6 +25,7 @@ class LibraryBookList(mixins.ListModelMixin,
         return self.create(request,*args,**kwargs)
 
 class LibraryBookImporterView(APIView):
+    permission_classes = (permissions.IsAuthenticated,)
     def get(self,request,pk,format=None):
         book = None
         try:
@@ -49,6 +55,7 @@ class LibraryBookIndividual(mixins.RetrieveModelMixin,
                             mixins.DestroyModelMixin,
                             generics.GenericAPIView):
 
+    permission_classes = (permissions.IsAuthenticated,)
     serializer_class=LibraryBookSerializer
     queryset = LibraryBook.objects.all()
 
@@ -61,26 +68,46 @@ class LibraryBookIndividual(mixins.RetrieveModelMixin,
     def destroy(self,request,*args,**kwargs):
         return self.destroy(request,*args,**kwargs)
 
+class UserList(generics.ListAPIView):
+    permission_classes = (permissions.IsAdminUser,permissions.IsAuthenticated)
+    queryset = User.objects.all()
+    serializer_class=UserSerializer
+
+class UserIndividual(generics.RetrieveAPIView):
+    permission_classes = (permissions.IsAdminUser,permissions.IsAuthenticated)
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+
 class InventoryList(generics.ListCreateAPIView):
+    permission_classes = (permissions.IsAuthenticated)
     queryset = Inventory.objects.all()
     serializer_class=InventorySerializer
+    def pre_save(self,obj):
+        obj.transaction_date=datetime.datetime.now()
 
 class InventoryIndividual(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = (permissions.IsAuthenticated)
+
     queryset = Inventory.objects.all()
     serializer_class = InventorySerializer
 
 class StoreList(generics.ListCreateAPIView):
+    permission_classes=(permissions.IsAuthenticated)
     queryset=Store.objects.all()
     serializer_class = StoreSerializer
 
 class StoreIndividual(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes=(permissions.IsAuthenticated)
     queryset=Store.objects.all()
     serializer_class = StoreSerializer
 
 class StoreToUserList(generics.ListCreateAPIView):
+    permission_classes=(permissions.IsAuthenticated)
     queryset = UserToStore.objects.all()
     serializer_class=UserToStoreSerializer
 
 class StoreToUserIndividual(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes=(permissions.IsAuthenticated)
     queryset=UserToStore.objects.all()
     serializer_class = UserToStoreSerializer
