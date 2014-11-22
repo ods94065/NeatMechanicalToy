@@ -1,0 +1,7 @@
+*~
+#~
+.idea/
+app/bookbeeper/static/
+*.py[co]
+venv/
+*.pem
