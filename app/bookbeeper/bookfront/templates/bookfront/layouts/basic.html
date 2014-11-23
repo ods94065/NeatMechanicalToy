@@ -1,0 +1,66 @@
+{% load staticfiles %}
+<!doctype html>
+<html lang="en" data-ng-app>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE-edge">
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.min.js"></script>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootswatch/3.1.1/journal/bootstrap.min.css">
+    <link rel="stylesheet" href="{%  static 'bookfront/css/basic.css' %}">
+    <title>{% block title %}Book Beeper{% endblock %}</title>
+  </head>
+  <body>
+    {% block navbar %}
+    <div class="navbar navbar-default" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Book Beeper</a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li><a href="#">Search</a></li>
+            <li><a href="#">Inventory</a></li>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            {% if not user.is_authenticated %}
+              <li><a href="/">Login</a></li>
+            {% else %}
+              <li>
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                   aria-expanded="false">{{ user }} <span class="caret"></span></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li><a href="/logout">Logout</a></li>
+                </ul>
+              </li>
+            {% endif %}
+          </ul>
+        </div>
+      </div>
+    </div>
+    {% endblock %}
+    {% block flash_message %}
+      {% if messages %}
+      <div class="container">
+        <div id='flash_message_container'>
+          {% for msg in messages %}
+            <div{% if msg.tags %} class="{{ msg.tags }}"{% endif %} alert-dismissable">
+              <button type="button" class="close" data-dismiss="alert">×</button>
+              {{ msg }}
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+    {% endblock %}
+    {% block body %}{% endblock %}
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+  </body>
+</html>
