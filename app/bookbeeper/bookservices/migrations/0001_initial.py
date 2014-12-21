@@ -1,127 +1,82 @@
 # -*- coding: utf-8 -*-
-from south.utils import datetime_utils as datetime
-from south.db import db
-from south.v2 import SchemaMigration
-from django.db import models
+from __future__ import unicode_literals
+
+from django.db import models, migrations
+from django.conf import settings
 
 
-class Migration(SchemaMigration):
+class Migration(migrations.Migration):
 
-    def forwards(self, orm):
-        # Adding model 'LibraryBook'
-        db.create_table(u'bookservices_librarybook', (
-            ('isbn_13', self.gf('django.db.models.fields.CharField')(unique=True, max_length=13, primary_key=True, db_index=True)),
-            ('isbn_10', self.gf('django.db.models.fields.CharField')(max_length=10, blank=True)),
-            ('title', self.gf('django.db.models.fields.CharField')(max_length=250, db_index=True)),
-            ('author', self.gf('django.db.models.fields.TextField')(max_length=1000)),
-            ('publisher', self.gf('django.db.models.fields.CharField')(max_length=200)),
-            ('publish_date', self.gf('django.db.models.fields.PositiveIntegerField')(null=True)),
-            ('description', self.gf('django.db.models.fields.TextField')(max_length=2000, blank=True)),
-            ('genre', self.gf('django.db.models.fields.TextField')(max_length=30, blank=True)),
-        ))
-        db.send_create_signal(u'bookservices', ['LibraryBook'])
+    dependencies = [
+        migrations.swappable_dependency(settings.AUTH_USER_MODEL),
+    ]
 
-        # Adding model 'Inventory'
-        db.create_table(u'bookservices_inventory', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('book', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['bookservices.LibraryBook'])),
-            ('quantity', self.gf('django.db.models.fields.IntegerField')(default=0)),
-        ))
-        db.send_create_signal(u'bookservices', ['Inventory'])
-
-        # Adding model 'Store'
-        db.create_table(u'bookservices_store', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(unique=True, max_length=100)),
-            ('inventory', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['bookservices.Inventory'])),
-        ))
-        db.send_create_signal(u'bookservices', ['Store'])
-
-        # Adding M2M table for field allowedUsers on 'Store'
-        m2m_table_name = db.shorten_name(u'bookservices_store_allowedUsers')
-        db.create_table(m2m_table_name, (
-            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
-            ('store', models.ForeignKey(orm[u'bookservices.store'], null=False)),
-            ('user', models.ForeignKey(orm[u'auth.user'], null=False))
-        ))
-        db.create_unique(m2m_table_name, ['store_id', 'user_id'])
-
-
-    def backwards(self, orm):
-        # Deleting model 'LibraryBook'
-        db.delete_table(u'bookservices_librarybook')
-
-        # Deleting model 'Inventory'
-        db.delete_table(u'bookservices_inventory')
-
-        # Deleting model 'Store'
-        db.delete_table(u'bookservices_store')
-
-        # Removing M2M table for field allowedUsers on 'Store'
-        db.delete_table(db.shorten_name(u'bookservices_store_allowedUsers'))
-
-
-    models = {
-        u'auth.group': {
-            'Meta': {'object_name': 'Group'},
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '80'}),
-            'permissions': ('django.db.models.fields.related.ManyToManyField', [], {'to': u"orm['auth.Permission']", 'symmetrical': 'False', 'blank': 'True'})
-        },
-        u'auth.permission': {
-            'Meta': {'ordering': "(u'content_type__app_label', u'content_type__model', u'codename')", 'unique_together': "((u'content_type', u'codename'),)", 'object_name': 'Permission'},
-            'codename': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'content_type': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['contenttypes.ContentType']"}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '50'})
-        },
-        u'auth.user': {
-            'Meta': {'object_name': 'User'},
-            'date_joined': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
-            'email': ('django.db.models.fields.EmailField', [], {'max_length': '75', 'blank': 'True'}),
-            'first_name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
-            'groups': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'related_name': "u'user_set'", 'blank': 'True', 'to': u"orm['auth.Group']"}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'is_active': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-            'is_staff': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'is_superuser': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'last_login': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
-            'last_name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
-            'password': ('django.db.models.fields.CharField', [], {'max_length': '128'}),
-            'user_permissions': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'related_name': "u'user_set'", 'blank': 'True', 'to': u"orm['auth.Permission']"}),
-            'username': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '30'})
-        },
-        u'bookservices.inventory': {
-            'Meta': {'object_name': 'Inventory'},
-            'book': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['bookservices.LibraryBook']"}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'quantity': ('django.db.models.fields.IntegerField', [], {'default': '0'})
-        },
-        u'bookservices.librarybook': {
-            'Meta': {'object_name': 'LibraryBook'},
-            'author': ('django.db.models.fields.TextField', [], {'max_length': '1000'}),
-            'description': ('django.db.models.fields.TextField', [], {'max_length': '2000', 'blank': 'True'}),
-            'genre': ('django.db.models.fields.TextField', [], {'max_length': '30', 'blank': 'True'}),
-            'isbn_10': ('django.db.models.fields.CharField', [], {'max_length': '10', 'blank': 'True'}),
-            'isbn_13': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '13', 'primary_key': 'True', 'db_index': 'True'}),
-            'publish_date': ('django.db.models.fields.PositiveIntegerField', [], {'null': 'True'}),
-            'publisher': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
-            'title': ('django.db.models.fields.CharField', [], {'max_length': '250', 'db_index': 'True'})
-        },
-        u'bookservices.store': {
-            'Meta': {'object_name': 'Store'},
-            'allowedUsers': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'stores'", 'symmetrical': 'False', 'to': u"orm['auth.User']"}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'inventory': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['bookservices.Inventory']"}),
-            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '100'})
-        },
-        u'contenttypes.contenttype': {
-            'Meta': {'ordering': "('name',)", 'unique_together': "(('app_label', 'model'),)", 'object_name': 'ContentType', 'db_table': "'django_content_type'"},
-            'app_label': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'model': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
-        }
-    }
-
-    complete_apps = ['bookservices']
+    operations = [
+        migrations.CreateModel(
+            name='Inventory',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('transaction_date', models.DateTimeField(verbose_name=b'Date of Transaction')),
+                ('transaction_type', models.IntegerField(default=1, verbose_name=b'Type of transaction', choices=[(2, b'Subtract from Inventory'), (1, b'Add to Inventory')])),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='LibraryBook',
+            fields=[
+                ('isbn_13', models.CharField(primary_key=True, serialize=False, max_length=13, unique=True, verbose_name=b'ISBN-13', db_index=True)),
+                ('isbn_10', models.CharField(max_length=10, verbose_name=b'ISBN-10', blank=True)),
+                ('title', models.CharField(max_length=250, verbose_name=b'Title of book', db_index=True)),
+                ('author', models.TextField(max_length=1000, verbose_name=b'Comma-separated lis of authors.')),
+                ('publisher', models.CharField(max_length=200, verbose_name=b'Name of imprint or publisher.')),
+                ('publish_date', models.PositiveIntegerField(null=True, verbose_name=b'Publication date')),
+                ('description', models.TextField(max_length=2000, verbose_name=b'Summary of book', blank=True)),
+                ('genre', models.CharField(max_length=500, verbose_name=b'Genre', blank=True)),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='Store',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(unique=True, max_length=100, verbose_name=b'Name of Store')),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='UserToStore',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('permission', models.CharField(default=b'rw', max_length=15, verbose_name=b'Kind of access granted to user.', choices=[(b'r', b'Read'), (b'w', b'Write'), (b'rw', b'Read-Write')])),
+                ('store', models.ForeignKey(to='bookservices.Store')),
+                ('user', models.ForeignKey(related_name='storerel', to=settings.AUTH_USER_MODEL)),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.AddField(
+            model_name='store',
+            name='allowedUsers',
+            field=models.ManyToManyField(related_name='store', through='bookservices.UserToStore', to=settings.AUTH_USER_MODEL),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='inventory',
+            name='book',
+            field=models.ForeignKey(to='bookservices.LibraryBook'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='inventory',
+            name='store',
+            field=models.ForeignKey(to='bookservices.Store'),
+            preserve_default=True,
+        ),
+    ]
