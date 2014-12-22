@@ -27,8 +27,8 @@ class StoreSerializer(serializers.ModelSerializer):
 
 
 class InventorySerializer(serializers.ModelSerializer):
-    book = serializers.PrimaryKeyRelatedField(source='book',many=False)
-    store = serializers.PrimaryKeyRelatedField(source='store',many=False)
+    book = serializers.PrimaryKeyRelatedField(queryset = LibraryBook.objects.all(),source='book',many=False)
+    store = serializers.PrimaryKeyRelatedField(queryset = Store.objects.all(),source='store',many=False)
     transaction_date = serializers.Field(source='transaction_date')
     class Meta:
         model = Inventory
@@ -39,15 +39,15 @@ class InventorySerializer(serializers.ModelSerializer):
         return super(InventorySerializer,self).is_valid()
 
 class UserSerializer(serializers.ModelSerializer):
-    storerel = serializers.PrimaryKeyRelatedField(many=True)
+    storerel = serializers.PrimaryKeyRelatedField(queryset = UserToStore.objects.all(),many=True)
     class Meta:
         model=User
         fields=('id','username','storerel')
 
 
 class UserToStoreSerializer(serializers.ModelSerializer):
-    store = serializers.PrimaryKeyRelatedField(many=False)
-    user = serializers.PrimaryKeyRelatedField(many=False)
+    store = serializers.PrimaryKeyRelatedField(queryset=Store.objects.all(), many=False)
+    user = serializers.PrimaryKeyRelatedField(queryset= User.objects.all(), many=False)
     class Meta:
         model = UserToStore
         fields=('user','store','permission')

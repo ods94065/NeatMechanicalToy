@@ -5,11 +5,11 @@ from django.contrib.auth.models import User
 
 class PostToInventoryPosition(BasePermission):
     def has_permission(self,request,view):
+        #figure out how to edit the session cookie. You want to mess with that instead of the request itself.
         try:
-            userpk = User.objects.get(id=request.user.id)
             if request.method==u'PUT' or request.method==u'POST':
-                storeid = request.data['store']
-                usertostore = UserToStore.objects.find(user=userpk.id,store=storeid)
+                storeid = request.session.get('store', None)
+                usertostore = UserToStore.objects.all().filter(user=request.user.id,store=storeid)
                 if usertostore:
                     return True
             else:
