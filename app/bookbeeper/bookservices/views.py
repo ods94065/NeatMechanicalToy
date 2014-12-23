@@ -79,35 +79,55 @@ class UserIndividual(generics.RetrieveAPIView):
     serializer_class = UserSerializer
 
 
-class InventoryList(generics.ListCreateAPIView):
-    permission_classes = (permissions.IsAuthenticated)
-    queryset = Inventory.objects.all()
-    serializer_class=InventorySerializer
+class InventoryList(mixins.ListModelMixin,
+                  mixins.CreateModelMixin,
+                  generics.GenericAPIView):
+
+    permission_classes = (permissions.IsAuthenticated,)
+    queryset = None
+    serializer_class = InventorySerializer
+
+    def get(self,request,*args,**kwargs):
+
+        store = request.session.get('store',None)
+        if store == None:
+            store = UserToStore.objects.all().filter(user = request.user.id)
+            if len(store)>0:
+                storeinfo = store[0].store.id
+                request.session['store']= storeinfo
+        self.queryset = Inventory.objects.all().filter(store = request.session.get('store', None))
+
+        return self.list(request,*args,**kwargs)
+
+    def post(self,request,*args,**kwargs):
+        return self.create(request,*args,**kwargs)
     def pre_save(self,obj):
         obj.transaction_date=datetime.datetime.now()
 
+
+
 class InventoryIndividual(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = (permissions.IsAuthenticated)
+    permission_classes = (permissions.IsAuthenticated,)
 
     queryset = Inventory.objects.all()
     serializer_class = InventorySerializer
 
 class StoreList(generics.ListCreateAPIView):
-    permission_classes=(permissions.IsAuthenticated)
+    permission_classes=(permissions.IsAuthenticated,)
     queryset=Store.objects.all()
     serializer_class = StoreSerializer
 
 class StoreIndividual(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes=(permissions.IsAuthenticated)
+    permission_classes=(permissions.IsAuthenticated,)
     queryset=Store.objects.all()
     serializer_class = StoreSerializer
 
 class StoreToUserList(generics.ListCreateAPIView):
-    permission_classes=(permissions.IsAuthenticated)
+    permission_classes=(permissions.IsAuthenticated,)
     queryset = UserToStore.objects.all()
     serializer_class=UserToStoreSerializer
 
 class StoreToUserIndividual(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes=(permissions.IsAuthenticated)
+    permission_classes=(permissions.IsAuthenticated,)
     queryset=UserToStore.objects.all()
     serializer_class = UserToStoreSerializer
