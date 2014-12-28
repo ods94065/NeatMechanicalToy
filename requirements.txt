@@ -4,3 +4,4 @@ djangorestframework
 google-api-python-client
 MySQL-python
 oauth2client
+pyOpenSSL
