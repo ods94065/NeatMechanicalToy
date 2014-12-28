@@ -1,3 +1,4 @@
+chai
 django
 djangorestframework
 google-api-python-client
