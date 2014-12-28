@@ -37,27 +37,30 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'bookang',
     'bookfront',
     'bookservices'
 )
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    #'django.middleware.common.CommonMiddleware',
+    #'django.middleware.csrf.CsrfViewMiddleware',
+    #'django.contrib.auth.middleware.AuthenticationMiddleware',
+    #'django.contrib.messages.middleware.MessageMiddleware',
+    #'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
 ROOT_URLCONF = 'bookbeeper.urls'
 
 WSGI_APPLICATION = 'bookbeeper.wsgi.application'
 REST_FRAMEWORK={
- #   'DEFAULT_PERMISSION_CLASSES':[
-
- #       'rest_framework.permissions.IsAdminUser'
-  #  ],
+#   'DEFAULT_PERMISSION_CLASSES':[
+#       'rest_framework.permissions.IsAdminUser'
+#  ],
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.SessionAuthentication',
+    ),
     'PAGINATE_BY':10
 }
 
@@ -74,7 +77,6 @@ DATABASES = {
         'PORT':'',
         #'OPTIONS':{
         #    'read_default_file':'/User/keaj/.my.cnf'
-
         #},
     }
 }

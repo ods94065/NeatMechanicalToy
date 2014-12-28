@@ -1,0 +1,24 @@
+<div style="margin-top: 5em">
+  <div class="col-md-4 col-md-offset-4">
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <h2 class="panel-title">Book Beeper &ndash; Sign In</h2>
+      </div>
+      <div class="panel-body" class="form-inline">
+        <form data-ng-submit="onLoginSubmit()">
+          <div class="form-group">
+            <label for="username">Username</label>
+            <input id="username" class="form-control" type="text"
+                   data-ng-model="loginUser.username">
+          </div>
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input id="password" class="form-control" type="password"
+                   data-ng-model="loginUser.password">
+          </div>
+          <input type="submit" class="btn btn-primary" value="Login">
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

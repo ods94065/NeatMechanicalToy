@@ -16,6 +16,9 @@ urlpatterns = patterns('',
     url(r'^userToStore/(?P<pk>[0-9]+)/$',views.StoreToUserIndividual.as_view()),
     url(r'^users/$', views.UserList.as_view()),
     url(r'^users/(?P<pk>[0-9]+)/$',views.UserIndividual.as_view()),
+    url(r'^session/user$', views.GetSessionUser.as_view()),
+    url(r'^session/login$',views.Login.as_view()),
+    url(r'^session/logout$', views.Logout.as_view())
 )
 
 urlpatterns = format_suffix_patterns(urlpatterns)

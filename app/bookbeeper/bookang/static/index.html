@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en" data-ng-app="books">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE-edge">
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.5/angular.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.5/angular-route.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.5/angular-resource.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+    <script src="/js/books.js"></script>
+    <link rel="stylesheet" href="/libs/bootswatch/3.3.1/journal/bootstrap.css">
+    <link rel="stylesheet" href="/css/basic.css">
+    <title>Book Beeper</title>
+  </head>
+  <body data-ng-controller="booksController">
+    <header>
+      <nav class="navbar navbar-default"
+           data-ng-controller="booksNavController">
+        <div class="container" data-ng-show="showNavBar">
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">Book Beeper</a>
+          </div>
+          <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+              <li><a href="#">Search</a></li>
+              <li><a href="#">Inventory</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+              <li data-ng-hide="isLoggedIn"><a href="/">Login</a></li>
+              <li data-ng-show="isLoggedIn">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                   aria-expanded="false">{{ sessionUser.name }} <span class="caret"></span></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li><a href="/logout">Logout</a></li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+      </div>
+      </nav>
+    </header>
+    <div id="main" class="container">
+      <div data-ng-controller="errorController" data-ng-include="partials/errors.html"></div>
+      <div data-ng-view></div>
+    </div>
+  </body>
+</html>

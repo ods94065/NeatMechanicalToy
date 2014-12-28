@@ -1,12 +1,16 @@
+import datetime
+import sys
+
 from bookservices.models import LibraryBook, User, UserToStore, Store, Inventory
 from bookservices.serializers import *
+from django.contrib import auth
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from APIServices import GoogleBooksService
-from rest_framework import status,mixins,generics
+from rest_framework import status,mixins,generics,response
 from utils.Exceptions import NoSuchBook
+from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import User
-import datetime,time
 from utils.Permissions import PostToInventoryPosition
 from rest_framework import permissions
 
@@ -111,3 +115,28 @@ class StoreToUserIndividual(generics.RetrieveUpdateDestroyAPIView):
     permission_classes=(permissions.IsAuthenticated)
     queryset=UserToStore.objects.all()
     serializer_class = UserToStoreSerializer
+
+
+class GetSessionUser(APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+    def get(self, request):
+        user = auth.get_user(request)
+        assert user.is_authenticated()
+        return response.Response({'user': UserSerializer(user).data})
+
+
+class Login(APIView):
+    def post(self, request):
+        form = AuthenticationForm(request, request.DATA)
+        if not form.is_valid():
+            return response.Response({'error': 'Login is incorrect'}, status=403)
+
+        user = form.get_user()
+        auth.login(request, user)
+        return response.Response({'user': UserSerializer(user).data})
+
+
+class Logout(APIView):
+    def post(self, request):
+        auth.logout(request)
+        return response.Response({}, status=204)
