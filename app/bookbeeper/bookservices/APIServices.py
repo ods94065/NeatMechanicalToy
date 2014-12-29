@@ -1,6 +1,6 @@
-__author__ = 'keaj'
-
 from __future__ import unicode_literals
+
+__author__ = 'keaj'
 
 import base64
 import httplib2
