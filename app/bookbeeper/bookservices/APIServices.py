@@ -1,4 +1,7 @@
 __author__ = 'keaj'
+
+from __future__ import unicode_literals
+
 import httplib2
 import os, json,copy,re
 import base64
@@ -29,7 +32,7 @@ class GoogleBooksService(object):
                 'https://www.googleapis.com/auth/books',
                  ]
         self._credentials = SignedJwtAssertionCredentials(
-            credinfo[u'web'][u'client_email'], key, scope, 'notasecret')
+            credinfo['web']['client_email'], key, scope, 'notasecret')
         http = httplib2.Http()
         self._httpClient = self._credentials.authorize(http)
         self._service = build('books', 'v1', http=self._httpClient)
@@ -41,35 +44,35 @@ class GoogleBooksService(object):
 
     def recordToSerializable(self, record):
         try:
-            record = record[u'items'][0]
+            record = record['items'][0]
         except KeyError:
             raise NoSuchBook
         qdict = {}
         #how to handle it if publisher and title are missing?
-        qdict[u'publisher']=record[u'volumeInfo'][u'publisher']
-        author = "&".join([authors for authors in record[u'volumeInfo'][u'authors']])
-        qdict[u'author']=unicode(author)
-        title = record[u'volumeInfo'][u'title']
+        qdict['publisher']=record['volumeInfo']['publisher']
+        author = "&".join([authors for authors in record['volumeInfo']['authors']])
+        qdict['author']=author
+        title = record['volumeInfo']['title']
         subt = ""
         try:
-            subt = record[u'volumeInfo'][u'subtitle']
+            subt = record['volumeInfo']['subtitle']
         except KeyError:
             pass
             #swallow the exception
         title = ":".join([title,subt]) if subt else title
-        qdict[u'title']=unicode(title)
-        date = record[u'volumeInfo'][u'publishedDate'].encode('utf-8')
+        qdict['title']=title
+        date = record['volumeInfo']['publishedDate'].encode('utf-8')
         if re.match(r'[0-9]{4}-[0-9]{2}-[0-9]{2}',date):
-            qdict[u'publish_date'] = date.split('-')[0]
+            qdict['publish_date'] = date.split('-')[0]
         else:
-            qdict[u'publish_date']=int(record[u'volumeInfo'][u'publishedDate'])
-        for a in record[u'volumeInfo'][u'industryIdentifiers'] :
-            if a[u'type']=='ISBN_13':
-                qdict[u'isbn_13']=a[u'identifier']
-            elif a[u'type']=='ISBN_10':
-                qdict[u'isbn_10']=a[u'identifier']
-        qdict[u'description']=record[u'volumeInfo'].get(u'description',"")
-        qdict[u'genre'] = unicode("&".join([a for a in record[u'volumeInfo'][u'categories']]))
+            qdict['publish_date']=int(record['volumeInfo']['publishedDate'])
+        for a in record['volumeInfo']['industryIdentifiers'] :
+            if a['type']=='ISBN_13':
+                qdict['isbn_13']=a['identifier']
+            elif a['type']=='ISBN_10':
+                qdict['isbn_10']=a['identifier']
+        qdict['description']=record['volumeInfo'].get('description',"")
+        qdict['genre'] = "&".join([a for a in record['volumeInfo']['categories']])
         return qdict
 
     def getByISBN(self, isbn):
