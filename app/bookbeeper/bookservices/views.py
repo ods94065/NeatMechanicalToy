@@ -1,10 +1,9 @@
+from bookservices import APIServices
 from bookservices.models import LibraryBook, User, UserToStore, Store, Inventory
 from bookservices.serializers import *
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from APIServices import GoogleBooksService
 from rest_framework import status,mixins,generics
-from utils.Exceptions import NoSuchBook
 from django.contrib.auth.models import User
 import datetime,time
 from utils.Permissions import PostToInventoryPosition
@@ -35,7 +34,7 @@ class LibraryBookImporterView(APIView):
         except Exception:
             #go find it on google books!
             try:
-                gbs = GoogleBooksService()
+                gbs = APIServices.GoogleBooksService()
                 book = gbs.getByISBN(str(pk))
                 serializer = LibraryBookSerializer(data = book)
                 if serializer.is_valid():
@@ -43,7 +42,7 @@ class LibraryBookImporterView(APIView):
                     return Response(serializer.data,status=status.HTTP_201_CREATED)
                 else:
                    return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
-            except NoSuchBook:
+            except APIServices.NoSuchBook:
                 return Response({'requested_isbn':pk,'error':"Book could not be imported. Likely, the ISBN is wrong, but the book could also be rare. If this is the case, you can enter it manually.",
                                  }, status=status.HTTP_400_BAD_REQUEST)
             except Exception as e:

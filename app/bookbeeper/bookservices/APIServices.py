@@ -1,14 +1,27 @@
 __author__ = 'keaj'
-import httplib2
-import os, json,copy,re
-import base64
-from apiclient.discovery import build
-from oauth2client.client import SignedJwtAssertionCredentials
-from utils.Exceptions import  NoSuchBook
 
+from __future__ import unicode_literals
+
+import base64
+import httplib2
+import json
+import os
+import re
+
+from apiclient import discovery
+from oauth2client import client
+
+
+class NoSuchBook(Exception):
+    pass
 
 
 class GoogleBooksService(object):
+    def __init__(self):
+        super(GoogleBooksService, self).__init__()
+        self._credentials = None
+        self.loadCredentialsAndAuthorize()
+
     def loadCredentialsAndAuthorize(self):
         try:
             key = base64.b64decode(os.environ['GBOOKS_PK'])
@@ -28,48 +41,60 @@ class GoogleBooksService(object):
         scope = [
                 'https://www.googleapis.com/auth/books',
                  ]
-        self._credentials = SignedJwtAssertionCredentials(
-            credinfo[u'web'][u'client_email'], key, scope, 'notasecret')
+        self._credentials = client.SignedJwtAssertionCredentials(
+            credinfo['web']['client_email'], key, scope,
+            private_key_password='notasecret')
         http = httplib2.Http()
         self._httpClient = self._credentials.authorize(http)
-        self._service = build('books', 'v1', http=self._httpClient)
-
-    def __init__(self):
-        super(GoogleBooksService, self).__init__()
-        self._credentials = None
-        self.loadCredentialsAndAuthorize()
+        self._service = discovery.build('books', 'v1', http=self._httpClient)
 
     def recordToSerializable(self, record):
         try:
-            record = record[u'items'][0]
+            record = record['items'][0]
         except KeyError:
             raise NoSuchBook
+
+        volumeInfo = record['volumeInfo']
+        requiredFields = ('industryIndentifiers','title')
+        if any(field not in volumeInfo for field in requiredFields):
+            # yes, some records are missing these!
+            # we'll treat them as flat-out broken.
+            raise NoSuchBook
+        if set('ISBN_10','ISBN_13').isdisjoint(
+                set(identifier['type']
+                for identifier in volumeInfo['industryIdentifiers'])):
+            # just in case there are industryIdentifiers but no ISBNs
+            raise NoSuchBook
+
         qdict = {}
-        #how to handle it if publisher and title are missing?
-        qdict[u'publisher']=record[u'volumeInfo'][u'publisher']
-        author = "&".join([authors for authors in record[u'volumeInfo'][u'authors']])
-        qdict[u'author']=unicode(author)
-        title = record[u'volumeInfo'][u'title']
-        subt = ""
-        try:
-            subt = record[u'volumeInfo'][u'subtitle']
-        except KeyError:
-            pass
-            #swallow the exception
-        title = ":".join([title,subt]) if subt else title
-        qdict[u'title']=unicode(title)
-        date = record[u'volumeInfo'][u'publishedDate'].encode('utf-8')
-        if re.match(r'[0-9]{4}-[0-9]{2}-[0-9]{2}',date):
-            qdict[u'publish_date'] = date.split('-')[0]
-        else:
-            qdict[u'publish_date']=int(record[u'volumeInfo'][u'publishedDate'])
-        for a in record[u'volumeInfo'][u'industryIdentifiers'] :
-            if a[u'type']=='ISBN_13':
-                qdict[u'isbn_13']=a[u'identifier']
-            elif a[u'type']=='ISBN_10':
-                qdict[u'isbn_10']=a[u'identifier']
-        qdict[u'description']=record[u'volumeInfo'].get(u'description',"")
-        qdict[u'genre'] = unicode("&".join([a for a in record[u'volumeInfo'][u'categories']]))
+        qdict['publisher']=volumeInfo.get('publisher','')
+        author = "&".join([authors for authors in volumeInfo.get('authors',[])])
+        qdict['author']=author
+        title = volumeInfo['title']
+        subt = volumeInfo.get('subtitle','')
+        title = ": ".join([title,subt]) if subt else title
+        qdict['title']=title
+
+        if 'publishedDate' in volumeInfo:
+            date = volumeInfo['publishedDate']
+            if re.match(r'[0-9]{4}-[0-9]{2}-[0-9]{2}',date):
+                cleanedDate = date.split('-')[0]
+            elif re.match(r'[0-9]{4}-[0-9]{2}', date):
+                cleanedDate = date.split('-')[0]
+            elif re.match(r'[0-9]{4}', date):
+                cleanedDate = date
+            else:
+                raise ValueError('Unsupported publish date type: %s' % date)
+            qdict['publish_date'] = cleanedDate
+
+        for a in volumeInfo['industryIdentifiers']:
+            if a['type']=='ISBN_13':
+                qdict['isbn_13']=a['identifier']
+            elif a['type']=='ISBN_10':
+                qdict['isbn_10']=a['identifier']
+        qdict['description']=volumeInfo.get('description',"")
+        if 'categories' in volumeInfo:
+            qdict['genre'] = "&".join([a for a in volumeInfo['categories']])
         return qdict
 
     def getByISBN(self, isbn):
