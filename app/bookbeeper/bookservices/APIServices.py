@@ -17,6 +17,11 @@ class NoSuchBook(Exception):
 
 
 class GoogleBooksService(object):
+    def __init__(self):
+        super(GoogleBooksService, self).__init__()
+        self._credentials = None
+        self.loadCredentialsAndAuthorize()
+
     def loadCredentialsAndAuthorize(self):
         try:
             key = base64.b64decode(os.environ['GBOOKS_PK'])
@@ -41,11 +46,6 @@ class GoogleBooksService(object):
         http = httplib2.Http()
         self._httpClient = self._credentials.authorize(http)
         self._service = discovery.build('books', 'v1', http=self._httpClient)
-
-    def __init__(self):
-        super(GoogleBooksService, self).__init__()
-        self._credentials = None
-        self.loadCredentialsAndAuthorize()
 
     def recordToSerializable(self, record):
         try:
