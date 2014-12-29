@@ -2,13 +2,18 @@ __author__ = 'keaj'
 
 from __future__ import unicode_literals
 
-import httplib2
-import os, json,copy,re
 import base64
-from apiclient.discovery import build
-from oauth2client.client import SignedJwtAssertionCredentials
-from utils.Exceptions import  NoSuchBook
+import httplib2
+import json
+import os
+import re
 
+from apiclient import discovery
+from oauth2client import client
+
+
+class NoSuchBook(Exception):
+    pass
 
 
 class GoogleBooksService(object):
@@ -31,11 +36,11 @@ class GoogleBooksService(object):
         scope = [
                 'https://www.googleapis.com/auth/books',
                  ]
-        self._credentials = SignedJwtAssertionCredentials(
+        self._credentials = client.SignedJwtAssertionCredentials(
             credinfo['web']['client_email'], key, scope, 'notasecret')
         http = httplib2.Http()
         self._httpClient = self._credentials.authorize(http)
-        self._service = build('books', 'v1', http=self._httpClient)
+        self._service = discovery.build('books', 'v1', http=self._httpClient)
 
     def __init__(self):
         super(GoogleBooksService, self).__init__()
