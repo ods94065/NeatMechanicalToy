@@ -54,30 +54,31 @@ class GoogleBooksService(object):
         except KeyError:
             raise NoSuchBook
         qdict = {}
+        volumeInfo = record['volumeInfo']
         #how to handle it if publisher and title are missing?
-        qdict['publisher']=record['volumeInfo']['publisher']
-        author = "&".join([authors for authors in record['volumeInfo']['authors']])
+        qdict['publisher']=volumeInfo['publisher']
+        author = "&".join([authors for authors in volumeInfo['authors']])
         qdict['author']=author
-        title = record['volumeInfo']['title']
+        title = volumeInfo['title']
         subt = ""
         try:
-            subt = record['volumeInfo']['subtitle']
+            subt = volumeInfo['subtitle']
         except KeyError:
             pass
             #swallow the exception
         title = ":".join([title,subt]) if subt else title
         qdict['title']=title
-        date = record['volumeInfo']['publishedDate'].encode('utf-8')
+        date = volumeInfo['publishedDate'].encode('utf-8')
         if re.match(r'[0-9]{4}-[0-9]{2}-[0-9]{2}',date):
             qdict['publish_date'] = date.split('-')[0]
         else:
-            qdict['publish_date']=int(record['volumeInfo']['publishedDate'])
-        for a in record['volumeInfo']['industryIdentifiers'] :
+            qdict['publish_date']=int(volumeInfo['publishedDate'])
+        for a in volumeInfo['industryIdentifiers'] :
             if a['type']=='ISBN_13':
                 qdict['isbn_13']=a['identifier']
             elif a['type']=='ISBN_10':
                 qdict['isbn_10']=a['identifier']
-        qdict['description']=record['volumeInfo'].get('description',"")
+        qdict['description']=volumeInfo.get('description',"")
         qdict['genre'] = "&".join([a for a in record['volumeInfo']['categories']])
         return qdict
 
