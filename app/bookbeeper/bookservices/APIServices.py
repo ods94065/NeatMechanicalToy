@@ -42,7 +42,8 @@ class GoogleBooksService(object):
                 'https://www.googleapis.com/auth/books',
                  ]
         self._credentials = client.SignedJwtAssertionCredentials(
-            credinfo['web']['client_email'], key, scope, 'notasecret')
+            credinfo['web']['client_email'], key, scope,
+            private_key_password='notasecret')
         http = httplib2.Http()
         self._httpClient = self._credentials.authorize(http)
         self._service = discovery.build('books', 'v1', http=self._httpClient)
